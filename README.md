@@ -11,7 +11,7 @@ The code of the scripts I ran is available. The implementations of each model on
 
 #### Hidden layer size 100 - Bach size 20
 
-| Library | Time (ms) | Forward only (ms) |
+| Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
 | Theano  | 343.8 | 122.9 |
 | Torch | 403.3 | 154.4 |
@@ -19,7 +19,7 @@ The code of the scripts I ran is available. The implementations of each model on
 
 #### Hidden layer size 500 - Bach size 20
 
-| Library | Time (ms) | Forward only (ms) |
+| Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
 | Torch | 543.2 | 195.8 |
 | Theano | 557.5 | 207.6 |
@@ -30,7 +30,7 @@ The code of the scripts I ran is available. The implementations of each model on
 
 #### Hidden layer size 100 - Bach size 20
 
-| Library | Time (ms) | Forward only (ms) |
+| Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
 | Theano  | 795.4 | 274.4 |
 | Torch | 3549.5 | 1630.8 |
@@ -38,7 +38,7 @@ The code of the scripts I ran is available. The implementations of each model on
 
 #### Hidden layer size 500 - Bach size 20
 
-| Library | Time (ms) | Forward only (ms) |
+| Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
 | Theano  | 2396.0 | 770.9 |
 | Torch | 4636.1 | 2923.9 |
