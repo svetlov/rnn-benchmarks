@@ -34,13 +34,20 @@ The reported time is the average time needed to run a training example (and not 
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
-| Theano  | 795.4 | 274.4 |
-| Torch | 3549.5 | 1630.8 |
+| Theano (FastLSTM) | 713.1 | 241.7 |
+| Theano (LSTM) | 795.4 | 274.4 |
+| Torch (Element-Research FastLSTM) | 1991.5 | 430.4 |
+| Torch (Element-Research LSTM) | 3549.5 | 1630.8 |
 
 
 #### Hidden layer size 500 - Bach size 20
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
-| Theano  | 2396.0 | 770.9 |
-| Torch | 4636.1 | 2923.9 |
+| Theano (FastLSTM) | 1151.9 | 386.6 |
+| Torch (Element-Research FastLSTM) | 2283.2 | 499.4 |
+| Theano (LSTM) | 2396.0 | 770.9 |
+| Torch (Element-Research LSTM) | 4636.1 | 2923.9 |
+
+
+FastLSTM implementations (for both Torch and Theano) do not use peephole connections between cell and gates, and compute the input, forget and output gates, as well as the hidden state, in the same operation.

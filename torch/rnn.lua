@@ -37,7 +37,7 @@ if networkType == 'rnn' then
       :add(nn.Sigmoid())
    rnn = nn.Recurrence(rnn, hiddenSize, 1)
 elseif networkType == 'lstm' then
-   rnn = nn.LSTM(inputSize, hiddenSize)
+   rnn = nn.FastLSTM(inputSize, hiddenSize)
 else
    error('Unkown network type!')
 end

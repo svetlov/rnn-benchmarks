@@ -159,7 +159,7 @@ class LSTM(object):
         return self.output
 
 
-class LSTMFast(object):
+class FastLSTM(object):
     """
     LSTM with faster implementation (supposedly).
     Not as expressive as the previous one though, because it doesn't include the peepholes connections.
@@ -218,7 +218,7 @@ class LSTMFast(object):
 # Parameters
 
 optparser = optparse.OptionParser()
-optparser.add_option("-n", "--network_type", default='rnn', help="Network type (rnn, lstm, lstmfast)")
+optparser.add_option("-n", "--network_type", default='rnn', help="Network type (rnn, lstm, fastlstm)")
 optparser.add_option("-i", "--input_size", default=100, type='int', help="Input layer size")
 optparser.add_option("-l", "--hidden_size", default=100, type='int', help="Hidden layer size")
 optparser.add_option("-s", "--seq_length", default=30, type='int', help="Sequence length")
@@ -249,8 +249,8 @@ if network_type == 'rnn':
     rnn = RNN(input_size, hidden_size)
 elif network_type == 'lstm':
     rnn = LSTM(input_size, hidden_size)
-elif network_type == 'lstmfast':
-    rnn = LSTMFast(input_size, hidden_size)
+elif network_type == 'fastlstm':
+    rnn = FastLSTM(input_size, hidden_size)
 else:
     raise Exception('Unknown network!')
 output = rnn.link(x)
