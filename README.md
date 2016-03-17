@@ -7,6 +7,8 @@ The networks (RNN or LSTM) take as input a 3D Tensor (batch_size x seq_length x 
 
 The code of the scripts I ran is available. The implementations of each model on the different libraries each use the fastest implementations I was able to find. If you are aware of faster implementations, please let me know. I've reported results on Theano and Torch so far, but I will try to include many more libraries in the future.
 
+The reported time is the average time needed to run a training example (and not a training batch), so the smaller the better.
+
 ### RNN
 
 #### Hidden layer size 100 - Bach size 20
