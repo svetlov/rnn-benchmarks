@@ -11,7 +11,7 @@ The reported time is the average time needed to run a training example (and not 
 
 ### RNN
 
-#### Hidden layer size 100 - Bach size 20
+#### Hidden layer size 100 - Batch size 20
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
@@ -19,7 +19,7 @@ The reported time is the average time needed to run a training example (and not 
 | Torch | 403.3 | 154.4 |
 
 
-#### Hidden layer size 500 - Bach size 20
+#### Hidden layer size 500 - Batch size 20
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
@@ -30,7 +30,7 @@ The reported time is the average time needed to run a training example (and not 
 
 ### LSTM
 
-#### Hidden layer size 100 - Bach size 20
+#### Hidden layer size 100 - Batch size 20
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
@@ -40,7 +40,7 @@ The reported time is the average time needed to run a training example (and not 
 | Torch (Element-Research LSTM) | 3549.5 | 1630.8 |
 
 
-#### Hidden layer size 500 - Bach size 20
+#### Hidden layer size 500 - Batch size 20
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
