@@ -4,8 +4,6 @@ provided by Maarten Bosma.
 
 I used the build-in rnn libary. ``basic_lstm`` is the Tensorflow equivalent of FastLSTM. 
 
-You could potentially speed up this code further by using feed queue or using ``rnn.dynamic_rnn``.
-
 To install TensorFlow follow [these instructions](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html#pip-installation).
 
 ## Results
