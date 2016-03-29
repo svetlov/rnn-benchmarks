@@ -32,6 +32,7 @@ end
 local xBatches = xValues:split(batchSize, 1)
 local yBatches = yValues:split(batchSize, 1)
 
+local a = torch.Timer()
 local rnn
 if networkType == 'rnn' then
    rnn = nn.Sequential()
@@ -51,11 +52,11 @@ if cpu ~= true then
    criterion:cuda()
 end
 
-local a = torch.Timer()
 local input = xBatches[1]:split(inputSize, 2)
 criterion:forward(rnn:forward(input), yBatches[1])
 rnn:backward(input, criterion:backward(rnn.output, yBatches[1]))
-print("Setup + 1 forward ")
+if cpu ~= true then cutorch.synchronize() end
+print("Setup : compile + forward/backward x 1")
 print("--- " .. a:time().real .. " seconds ---")
 
 a:reset()
@@ -65,6 +66,7 @@ for i = 1, #xBatches do
    end
    rnn:forward(xBatches[i]:split(inputSize, 2))
 end
+if cpu ~= true then cutorch.synchronize() end
 print("Forward:")
 print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. nSamples / a:time().real .. " samples/s) ---")
 
@@ -79,5 +81,6 @@ for i = 1, #xBatches do
    rnn:backward(input, criterion:backward(rnn.output, yBatches[i]))
    rnn:updateParameters(0.01)
 end
+if cpu ~= true then cutorch.synchronize() end
 print("Forward + Backward:")
 print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. nSamples / a:time().real .. " samples/s) ---")
