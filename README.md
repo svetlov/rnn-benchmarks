@@ -15,7 +15,7 @@ The reported time is the average time needed to run a training example (and not 
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
-| Theano  | 343.8 | 122.9 |
+| Theano  | 253.9 | 87.82 |
 | Torch | 403.3 | 154.4 |
 
 
@@ -23,8 +23,8 @@ The reported time is the average time needed to run a training example (and not 
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
+| Theano | 498.4 | 182.9 |
 | Torch | 543.2 | 195.8 |
-| Theano | 557.5 | 207.6 |
 
 
 
@@ -34,9 +34,9 @@ The reported time is the average time needed to run a training example (and not 
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
-| Theano (FastLSTM) | 713.1 | 241.7 |
-| Theano (LSTM) | 795.4 | 274.4 |
-| Torch (Element-Research FastLSTM) | 1991.5 | 430.4 |
+| Theano (FastLSTM) | 587.7 | 215.1 |
+| Theano (LSTM) | 725.3 | 237.5 |
+| Torch (Element-Research FastLSTM) | 1017.4 | 367.3 |
 | Torch (Element-Research LSTM) | 3549.5 | 1630.8 |
 
 
@@ -44,9 +44,9 @@ The reported time is the average time needed to run a training example (and not 
 
 | Library | Time (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- |
-| Theano (FastLSTM) | 1151.9 | 386.6 |
-| Torch (Element-Research FastLSTM) | 2283.2 | 499.4 |
-| Theano (LSTM) | 2396.0 | 770.9 |
+| Theano (FastLSTM) | 1045.4 | 342.7 |
+| Torch (Element-Research FastLSTM) | 1106.5 | 425.2 |
+| Theano (LSTM) | 2298.1 | 736.4 |
 | Torch (Element-Research LSTM) | 4636.1 | 2923.9 |
 
 
