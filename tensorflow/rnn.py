@@ -50,7 +50,7 @@ else:
     raise Exception('Unknown network! '+network_type)
 
 output, _cell_state = rnn.rnn(cell, x, dtype=tf.float32)
-cost = tf.reduce_mean((output[-1] - y) ** 2)
+cost = tf.reduce_sum((output[-1] - y) ** 2)
 
 optim = tf.train.GradientDescentOptimizer(0.01)
 train_op = optim.minimize(cost)
