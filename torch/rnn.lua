@@ -35,10 +35,8 @@ local yBatches = yValues:split(batchSize, 1)
 local rnn
 if networkType == 'rnn' then
    rnn = nn.Sequential()
-      :add(nn.ParallelTable()
-      :add(nn.Linear(inputSize, hiddenSize))
-      :add(nn.Linear(hiddenSize, hiddenSize)))
-      :add(nn.CAddTable())
+      :add(nn.JoinTable(1,1))
+      :add(nn.Linear(inputSize+hiddenSize, hiddenSize))
       :add(nn.Sigmoid())
    rnn = nn.Recurrence(rnn, hiddenSize, 1)
 elseif networkType == 'lstm' then
@@ -53,7 +51,14 @@ if cpu ~= true then
    criterion:cuda()
 end
 
-local start = os.clock()
+local a = torch.Timer()
+local input = xBatches[1]:split(inputSize, 2)
+criterion:forward(rnn:forward(input), yBatches[1])
+rnn:backward(input, criterion:backward(rnn.output, yBatches[1]))
+print("Setup + 1 forward ")
+print("--- " .. a:time().real .. " seconds ---")
+
+a:reset()
 for i = 1, #xBatches do
    if (i % 100 == 0) then
       print(i)
@@ -61,9 +66,9 @@ for i = 1, #xBatches do
    rnn:forward(xBatches[i]:split(inputSize, 2))
 end
 print("Forward:")
-print("--- " .. nSamples .. " samples in " .. (os.clock() - start) .. " seconds (" .. nSamples / (os.clock() - start) .. " samples/s) ---")
+print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. nSamples / a:time().real .. " samples/s) ---")
 
-start = os.clock()
+a:reset()
 for i = 1, #xBatches do
    if (i % 100 == 0) then
       print(i)
@@ -75,4 +80,4 @@ for i = 1, #xBatches do
    rnn:updateParameters(0.01)
 end
 print("Forward + Backward:")
-print("--- " .. nSamples .. " samples in " .. (os.clock() - start) .. " seconds (" .. nSamples / (os.clock() - start) .. " samples/s) ---")
+print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. nSamples / a:time().real .. " samples/s) ---")
