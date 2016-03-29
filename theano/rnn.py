@@ -259,9 +259,11 @@ cost = ((output - y) ** 2).mean()
 updates = [(p, p - theano.shared(np.float32(0.01)) * g) for p, g in zip(rnn.params, T.grad(cost, rnn.params))]
 
 print 'compiling...'
+start = time.time()
 f_test = theano.function(inputs=[index], outputs=output, givens={x: x_values[index:index + batch_size]})
 f_train = theano.function(inputs=[index], outputs=cost, updates=updates, givens={x: x_values[index:index + batch_size], y: y_values[index:index + batch_size]})
-
+print "Setup"
+print "--- %s seconds" % time.time() - start
 
 start = time.time()
 for k, i in enumerate(xrange(0, n_samples, batch_size)):
