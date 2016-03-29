@@ -3,6 +3,11 @@ require('cutorch')
 require('nn')
 require('cunn')
 require('rnn')
+require('nngraph')
+
+-- Should produce a speed increase.
+nn.FastLSTM.usenngraph = true
+
 -- cutorch.setDevice(2)
 
 cmd = torch.CmdLine()
