@@ -5,16 +5,18 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.python.ops import rnn
 
+
 def get_feed_dict(x_data, y_data=None):
     feed_dict = {}
 
-    if not y_data is None:
+    if y_data is not None:
         feed_dict[y] = y_data
 
     for i in xrange(X_data.shape[1]):
         feed_dict[x[i]] = x_data[:, i, :]
 
     return feed_dict
+
 
 # Parameters
 optparser = optparse.OptionParser()
@@ -60,14 +62,14 @@ session.run(tf.initialize_all_variables())
 
 start = time.time()
 for k, i in enumerate(xrange(0, n_samples, batch_size)):
-    session.run(output[-1], feed_dict=get_feed_dict(X_data[i:i+batch_size])) 
-
+    session.run(output[-1], feed_dict=get_feed_dict(X_data[i:i+batch_size]))
+end = time.time()
 print "Forward:"
-print "--- %i samples in %s seconds (%f samples/s) ---" % (n_samples, time.time() - start, n_samples / (time.time() - start))
+print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)
 
 start = time.time()
 for k, i in enumerate(xrange(0, n_samples, batch_size)):
-    session.run(train_op, feed_dict=get_feed_dict(X_data[i:i+batch_size], Y_data[i:i+batch_size])) 
-
+    session.run(train_op, feed_dict=get_feed_dict(X_data[i:i+batch_size], Y_data[i:i+batch_size]))
+end = time.time()
 print "Forward + Backward:"
-print "--- %i samples in %s seconds (%f samples/s) ---" % (n_samples, time.time() - start, n_samples / (time.time() - start))
+print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)

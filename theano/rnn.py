@@ -231,7 +231,7 @@ hidden_size = opts.hidden_size
 seq_length = opts.seq_length
 batch_size = opts.batch_size
 
-start = time.time()
+
 # Data
 
 n_samples = 100000
@@ -240,6 +240,8 @@ y_values = theano.shared(np.random.rand(n_samples, hidden_size).astype(np.float3
 
 
 # Network
+
+start = time.time()
 
 index = T.iscalar()
 x = T.ftensor3()
@@ -261,22 +263,24 @@ updates = [(p, p - theano.shared(np.float32(0.01)) * g) for p, g in zip(rnn.para
 print 'compiling...'
 f_test = theano.function(inputs=[index], outputs=output, givens={x: x_values[index:index + batch_size]})
 f_train = theano.function(inputs=[index], outputs=cost, updates=updates, givens={x: x_values[index:index + batch_size], y: y_values[index:index + batch_size]})
-f_train(1)
+f_train(0)
 print "Setup : compile + forward/backward x 1"
-print "--- %s seconds" % time.time() - start
+print "--- %s seconds" % (time.time() - start)
 
 start = time.time()
 for k, i in enumerate(xrange(0, n_samples, batch_size)):
     # if k % 100 == 0:
     #     print k
     f_test(i)
+end = time.time()
 print "Forward:"
-print "--- %i samples in %s seconds (%f samples/s) ---" % (n_samples, time.time() - start, n_samples / (time.time() - start))
+print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)
 
 start = time.time()
 for k, i in enumerate(xrange(0, n_samples, batch_size)):
     # if k % 100 == 0:
     #     print k
     f_train(i)
+end = time.time()
 print "Forward + Backward:"
-print "--- %i samples in %s seconds (%f samples/s) ---" % (n_samples, time.time() - start, n_samples / (time.time() - start))
+print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)

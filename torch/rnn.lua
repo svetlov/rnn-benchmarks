@@ -61,7 +61,7 @@ print("--- " .. a:time().real .. " seconds ---")
 
 a:reset()
 for i = 1, #xBatches do
-   if (i % 100 == 0) then
+   if (i % 1000 == 0) then
       print(i)
    end
    rnn:forward(xBatches[i]:split(inputSize, 2))
@@ -72,7 +72,7 @@ print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. n
 
 a:reset()
 for i = 1, #xBatches do
-   if (i % 100 == 0) then
+   if (i % 1000 == 0) then
       print(i)
    end
    local input = xBatches[i]:split(inputSize, 2)
