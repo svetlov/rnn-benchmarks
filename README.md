@@ -17,11 +17,11 @@ the fastest implementations we were able to find.
 If you are aware of faster implementations, please let me know. 
 I've reported results on Theano, Torch and TensorFlow so far, but we will try to include many more libraries in the future (including cudnn very soon).
 
-The reported time is the average time needed to run a training example (and not a training batch), so the smaller the better.
+The reported `Train` time is the average time needed to run (forward, backward, and update) a training example (and not a training batch), so the smaller the better.
 We also report compilation time, which includes symbolic graph optimizations (Theano and TensorFlow), as well as a forward and backward pass (to allocate memory).
 While the compilation time isn't really a factor in production, it does increase debugging time.
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano |  |  |  |
 | Torch  |  |  |  |
@@ -35,7 +35,7 @@ This LSTM implementation does not use peephole connections between cell and gate
 
 #### Hidden Size 128
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano | 7.46 | 289.6 | 99.1 |
 | Torch  | 0.03 | 434.4 | 99.9 |
@@ -44,7 +44,7 @@ This LSTM implementation does not use peephole connections between cell and gate
 
 #### Hidden Size 512
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano | 7.59 | 619.4 | 200.9 |
 | Torch  | 0.19 | 610.7 | 201.7 |
@@ -53,7 +53,7 @@ This LSTM implementation does not use peephole connections between cell and gate
 
 #### Hidden Size 1024
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano | 9.62 | 1013.5 | 324.1 |
 | Torch  | 0.69 | 1139.8 | 346.3 |
@@ -64,7 +64,7 @@ This LSTM implementation does not use peephole connections between cell and gate
 
 #### Hidden Size 128
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano | 7.38 | 102.9 | 25.6 |
 | Torch  | 0.03 | 109.8 | 25.2 |
@@ -73,7 +73,7 @@ This LSTM implementation does not use peephole connections between cell and gate
 
 #### Hidden Size 512
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano | 7.50 | 256.0 | 62.8 |
 | Torch  | 0.20 | 214.3 | 51.4 |
@@ -81,7 +81,7 @@ This LSTM implementation does not use peephole connections between cell and gate
 
 #### Hidden Size 1024
 
-| Library | Compile (s) | Forward+Backward+Update (µs) | Forward only (µs) |
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
 | ------------- | ------------- | ------------- | ------------- |
 | Theano | 7.45 | 583.4 | 160.2 |
 | Torch  | 0.75 | 558.1 | 112.4 |
