@@ -93,75 +93,73 @@ Forward + Backward:
 ### 30 x 32 x 128
 
 ```
+$ th rnn.lua -network 'rnn' -batchsize 32 -hiddensize 128 -seqlen 30
+Setup : compile + forward/backward x 1  
+--- 0.045458793640137 seconds ---
+Forward:
+--- 32000 samples in 3.2980129718781 seconds (9702.8295844296 samples/s, 103.06271910667 microsec/samples) ---  
+Forward + Backward:
+--- 32000 samples in 8.305154800415 seconds (3853.0314888602 samples/s, 259.53590124846 microsec/samples) ---
 
 ``` 
 
 ### 30 x 32 x 512
 
 ```
-
+$ th rnn.lua -network 'rnn' -batchsize 32 -hiddensize 512 -seqlen 30
+Setup : compile + forward/backward x 1  
+--- 0.053925037384033 seconds ---
+Forward:
+--- 32000 samples in 3.6663720607758 seconds (8727.9910213711 samples/s, 114.57390338182 microsec/samples) ---  
+Forward + Backward:
+--- 32000 samples in 9.2218749523163 seconds (3470.0127856443 samples/s, 288.18337619305 microsec/samples) --- 
 ``` 
 
 ### 30 x 32 x 1024
 
 ```
-
+$ th rnn.lua -network 'rnn' -batchsize 32 -hiddensize 1024 -seqlen 30
+Setup : compile + forward/backward x 1  
+--- 0.08701491355896 seconds ---
+Forward:
+--- 32000 samples in 3.8027799129486 seconds (8414.9119629321 samples/s, 118.83665621281 microsec/samples) ---  
+Forward + Backward:
+--- 32000 samples in 12.205145835876 seconds (2621.8464374057 samples/s, 381.4105913043 microsec/samples) ---   
 ``` 
 
 ### 30 x 128 x 128
 
 ```
-
+$ th rnn.lua -network 'rnn' -batchsize 128 -hiddensize 128 -seqlen 30
+Setup : compile + forward/backward x 1  
+--- 0.078629016876221 seconds ---
+Forward:
+--- 128000 samples in 4.1859209537506 seconds (30578.752442332 samples/s, 32.702445983887 microsec/samples) --- 
+Forward + Backward:
+--- 128000 samples in 8.6592428684235 seconds (14781.904624814 samples/s, 67.650280892849 microsec/samples) --- 
 ``` 
 
 ### 30 x 128 x 512
 
 ```
-
+$ th rnn.lua -network 'rnn' -batchsize 128 -hiddensize 512 -seqlen 30
+Setup : compile + forward/backward x 1  
+--- 0.088251113891602 seconds ---
+Forward:
+--- 128000 samples in 4.383120059967 seconds (29203.014867419 samples/s, 34.243039786816 microsec/samples) ---  
+Forward + Backward:
+--- 128000 samples in 9.4049069881439 seconds (13609.928358313 samples/s, 73.475772514939 microsec/samples) --- 
 ``` 
 
 ### 30 x 128 x 1024
 
 ```
-
+$ th rnn.lua -network 'rnn' -batchsize 128 -hiddensize 1024 -seqlen 30
+Setup : compile + forward/backward x 1  
+--- 0.12880301475525 seconds ---
+Forward:
+--- 128000 samples in 8.2753868103027 seconds (15467.566064044 samples/s, 64.651412889361 microsec/samples) --- 
+Forward + Backward:
+--- 128000 samples in 19.230028152466 seconds (6656.2610449056 samples/s, 150.23449249566 microsec/samples) --- 
 ``` 
 
-
-## LSTM
-
-
-### 30 x 32 x 128
-
-```
-
-``` 
-
-### 30 x 32 x 512
-
-```
-
-``` 
-
-### 30 x 32 x 1024
-
-```
-
-``` 
-
-### 30 x 128 x 128
-
-```
-
-``` 
-
-### 30 x 128 x 512
-
-```
-
-``` 
-
-### 30 x 128 x 1024
-
-```
-
-``` 

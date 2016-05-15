@@ -98,76 +98,86 @@ Forward + Backward:
 ### 30 x 32 x 128
 
 ```
-
+$ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python rnn.py -n 'rnn' -l 128 -s 30 -b 32
+Using gpu device 0: GeForce GTX TITAN X (CNMeM is disabled, cuDNN not available)
+Compiling...
+Setup : compile + forward/backward x 1
+--- 4.309237957 seconds
+Forward:
+--- 32000 samples in 0.989920139313 seconds (32325.839963 samples/s, 0.0000309 s/sample) ---
+Forward + Backward:
+--- 32000 samples in 3.34791088104 seconds (9558.199467 samples/s, 0.0001046 s/sample) ---
 ``` 
 
 ### 30 x 32 x 512
 
-```
 
+```
+$ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python rnn.py -n 'rnn' -l 512 -s 30 -b 32
+Using gpu device 0: GeForce GTX TITAN X (CNMeM is disabled, cuDNN not available)
+Compiling...
+Setup : compile + forward/backward x 1
+--- 4.36186599731 seconds
+Forward:
+--- 32000 samples in 3.27020597458 seconds (9785.316353 samples/s, 0.0001022 s/sample) ---
+Forward + Backward:
+--- 32000 samples in 8.80706095695 seconds (3633.448225 samples/s, 0.0002752 s/sample) ---
 ``` 
 
 ### 30 x 32 x 1024
 
 ```
+$ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python rnn.py -n 'rnn' -l 1024 -s 30 -b 32
+Using gpu device 0: GeForce GTX TITAN X (CNMeM is disabled, cuDNN not available)
+Compiling...
+Setup : compile + forward/backward x 1
+--- 4.44132804871 seconds
+Forward:
+--- 32000 samples in 5.74468803406 seconds (5570.363405 samples/s, 0.0001795 s/sample) ---
+Forward + Backward:
+--- 32000 samples in 14.2010200024 seconds (2253.359265 samples/s, 0.0004438 s/sample) ---
 
 ``` 
 
 ### 30 x 128 x 128
 
 ```
+$ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python rnn.py -n 'rnn' -l 128 -s 30 -b 128
+Using gpu device 0: GeForce GTX TITAN X (CNMeM is disabled, cuDNN not available)
+Compiling...
+Setup : compile + forward/backward x 1
+--- 4.48347306252 seconds
+Forward:
+--- 128000 samples in 1.74959516525 seconds (73159.781498 samples/s, 0.0000137 s/sample) ---
+Forward + Backward:
+--- 128000 samples in 5.81079101562 seconds (22027.982018 samples/s, 0.0000454 s/sample) ---
 
 ``` 
 
 ### 30 x 128 x 512
 
 ```
-
+$ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python rnn.py -n 'rnn' -l 512 -s 30 -b 128
+Using gpu device 0: GeForce GTX TITAN X (CNMeM is disabled, cuDNN not available)
+Compiling...
+Setup : compile + forward/backward x 1
+--- 4.40771007538 seconds
+Forward:
+--- 128000 samples in 3.04104089737 seconds (42090.851231 samples/s, 0.0000238 s/sample) ---
+Forward + Backward:
+--- 128000 samples in 10.1157169342 seconds (12653.576690 samples/s, 0.0000790 s/sample) ---
 ``` 
 
 ### 30 x 128 x 1024
 
 ```
-
+$ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python rnn.py -n 'rnn' -l 1024 -s 30 -b 128
+Using gpu device 0: GeForce GTX TITAN X (CNMeM is disabled, cuDNN not available)
+Compiling...
+Setup : compile + forward/backward x 1
+--- 4.38037991524 seconds
+Forward:
+--- 128000 samples in 6.43677687645 seconds (19885.728907 samples/s, 0.0000503 s/sample) ---
+Forward + Backward:
+--- 128000 samples in 18.919303894 seconds (6765.576615 samples/s, 0.0001478 s/sample) ---
 ``` 
-
-## LSTM
-
-
-### 30 x 32 x 128
-
-```
-
-``` 
-
-### 30 x 32 x 512
-
-```
-
-``` 
-
-### 30 x 32 x 1024
-
-```
-
-``` 
-
-### 30 x 128 x 128
-
-```
-
-``` 
-
-### 30 x 128 x 512
-
-```
-
-``` 
-
-### 30 x 128 x 1024
-
-```
-
-``` 
-
-

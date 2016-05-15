@@ -18,18 +18,12 @@ If you are aware of faster implementations, please let me know.
 I've reported results on Theano, Torch and TensorFlow so far, but we will try to include many more libraries in the future (including cudnn very soon).
 
 The reported `Train` time is the average time needed to run (forward, backward, and update) a training example (and not a training batch), so the smaller the better.
-We also report compilation time, which includes symbolic graph optimizations (Theano and TensorFlow), as well as a forward and backward pass (to allocate memory).
-While the compilation time isn't really a factor in production, it does increase debugging time.
+We also report `Compile` time, which includes symbolic graph optimizations (Theano and TensorFlow compilation), as well as a forward and backward pass (to allocate memory).
+While the compilation time isn't really a factor in production, it does increase debugging time, which is why we report it here.
 
-| Library | Compile (s) | Train (µs) | Forward only (µs) |
-| ------------- | ------------- | ------------- | ------------- |
-| Theano |  |  |  |
-| Torch  |  |  |  |
-| TensorFlow |  |  | |
+## LSTM
 
-## Fast LSTM
-
-This LSTM implementation does not use peephole connections between cell and gates.
+This LSTM implementation used for these benchmarks does not use peephole connections between cell and gates.
 
 ### Batch Size 32
 
@@ -96,28 +90,50 @@ This section benchmarks a simple RNN implementation.
 
 #### Hidden Size 128
 
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
+| ------------- | ------------- | ------------- | ------------- |
+| Theano | 4.31 | 104.6 | 30.9 |
+| Torch  | 0.05 | 259.53 | 103.06 |
+| TensorFlow | 1.64 | 278.4 | 111.5 |
 
 #### Hidden Size 512
 
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
+| ------------- | ------------- | ------------- | ------------- |
+| Theano | 4.36 | 275.2 | 102.2 |
+| Torch  | 0.05 | 288.2 | 114.6 |
+| TensorFlow | 1.62 | 349.7 | 218.4 |
 
 #### Hidden Size 1024
 
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
+| ------------- | ------------- | ------------- | ------------- |
+| Theano | 4.44 | 443.8 | 179.5 |
+| Torch  | 0.09 | 381.4 | 118.8 |
+| TensorFlow | 1.72 | 530.0 | 241.7 |
 
 ### Batch Size 128
 
 #### Hidden Size 128
 
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
+| ------------- | ------------- | ------------- | ------------- |
+| Theano | 4.48 | 45.4 | 13.7 |
+| Torch  | 0.08 | 67.7 | 32.7 |
+| TensorFlow | 1.70 | 75.5 | 33.6 |
 
 #### Hidden Size 512
 
-
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
+| ------------- | ------------- | ------------- | ------------- |
+| Theano | 4.40 | 79.0 | 23.8 |
+| Torch  | 0.09 | 73.5 | 34.2 |
+| TensorFlow | 1.63 | 125.6 | 86.8 |
 
 #### Hidden Size 1024
 
-
-
-### LSTM
-
-This LSTM implementation uses peephole connections between cell and gates.
-
-
+| Library | Compile (s) | Train (µs) | Forward only (µs) |
+| ------------- | ------------- | ------------- | ------------- |
+| Theano | 4.38 | 147.8 | 50.3 |
+| Torch  | 0.13 | 150.2 | 64.7 |
+| TensorFlow | 1.70 | 222.5 | 137.8 |
