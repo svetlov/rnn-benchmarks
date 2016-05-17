@@ -13,74 +13,77 @@ nn.FastLSTM.usenngraph = true
 cmd = torch.CmdLine()
 cmd:text()
 cmd:text('Options')
-cmd:option('-nSamples', 100000, 'Number of samples')
-cmd:option('-networkType', 'lstm', 'Network type')
-cmd:option('-inputSize', 100, 'Neural network input size')
-cmd:option('-hiddenSize', 100, 'Neural network hidden layer size')
-cmd:option('-seqLength', 30, 'Sequence length')
-cmd:option('-batchSize', 20, 'Batch size')
-cmd:option('-cpu', false, 'Run on CPU')
+cmd:option('-nbatch', 1000, 'Number of samples')
+cmd:option('-network', 'fastlstm', 'Network type')
+cmd:option('-hiddensize', 128, 'Neural network input and output size')
+cmd:option('-seqlen', 30, 'Sequence length')
+cmd:option('-batchsize', 20, 'Batch size')
 cmd:text()
 for k, v in pairs(cmd:parse(arg)) do _G[k] = v end
 
-local xValues = torch.rand(nSamples, seqLength * inputSize)
-local yValues = torch.rand(nSamples, hiddenSize)
-if cpu ~= true then
-   xValues = xValues:cuda()
-   yValues = yValues:cuda()
-end
-local xBatches = xValues:split(batchSize, 1)
-local yBatches = yValues:split(batchSize, 1)
+local input = torch.rand(seqlen, batchsize, hiddensize):cuda()
+local target = torch.rand(batchsize, hiddensize):cuda()
 
 local a = torch.Timer()
 local rnn
-if networkType == 'rnn' then
+if network == 'rnn' then
    rnn = nn.Sequential()
       :add(nn.JoinTable(1,1))
-      :add(nn.Linear(inputSize+hiddenSize, hiddenSize))
+      :add(nn.Linear(hiddensize*2, hiddensize))
       :add(nn.Sigmoid())
-   rnn = nn.Recurrence(rnn, hiddenSize, 1)
-elseif networkType == 'lstm' then
-   rnn = nn.FastLSTM(inputSize, hiddenSize)
+   rnn = nn.Recurrence(rnn, hiddensize, 1)
+   rnn = nn.Sequential()
+      :add(nn.Sequencer(rnn))
+      :add(nn.Select(1,-1))
+elseif network == 'lstm' then -- ( no peephole connections)
+   rnn = nn.LSTM(hiddensize, hiddensize)
+   rnn = nn.Sequential()
+      :add(nn.Sequencer(rnn))
+      :add(nn.Select(1,-1))
+elseif network == 'oldfastlstm' then -- ( no peephole connections)
+   rnn = nn.FastLSTM(hiddensize, hiddensize)
+   rnn = nn.Sequential()
+      :add(nn.Sequencer(rnn))
+      :add(nn.Select(1,-1))
+elseif network == 'fastlstm' then -- like fastlstm but faster ( no peephole connections)
+   rnn = nn.SeqLSTM(hiddensize, hiddensize)
+   rnn = nn.Sequential()
+      :add(rnn)
+      :add(nn.Select(1,-1))
 else
    error('Unkown network type!')
 end
-local rnn = nn.Sequential():add(nn.Sequencer(rnn)):add(nn.SelectTable(-1))
+
 local criterion = nn.MSECriterion()
 if cpu ~= true then
    rnn:cuda()
    criterion:cuda()
 end
 
-local input = xBatches[1]:split(inputSize, 2)
-criterion:forward(rnn:forward(input), yBatches[1])
-rnn:backward(input, criterion:backward(rnn.output, yBatches[1]))
-if cpu ~= true then cutorch.synchronize() end
+criterion:forward(rnn:forward(input), target)
+rnn:backward(input, criterion:backward(rnn.output, target))
+cutorch.synchronize()
 print("Setup : compile + forward/backward x 1")
 print("--- " .. a:time().real .. " seconds ---")
 
 a:reset()
-for i = 1, #xBatches do
-   if (i % 1000 == 0) then
-      print(i)
-   end
-   rnn:forward(xBatches[i]:split(inputSize, 2))
+for i = 1, nbatch do
+   rnn:forward(input)
 end
-if cpu ~= true then cutorch.synchronize() end
+cutorch.synchronize()
 print("Forward:")
-print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. nSamples / a:time().real .. " samples/s) ---")
+local nSamples = nbatch * batchsize
+local speed = nSamples / a:time().real
+print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. speed .. " samples/s, " .. 1000000/speed .. " microsec/samples) ---")
 
 a:reset()
-for i = 1, #xBatches do
-   if (i % 1000 == 0) then
-      print(i)
-   end
-   local input = xBatches[i]:split(inputSize, 2)
-   criterion:forward(rnn:forward(input), yBatches[i])
+for i = 1, nbatch do
+   criterion:forward(rnn:forward(input), target)
    rnn:zeroGradParameters()
-   rnn:backward(input, criterion:backward(rnn.output, yBatches[i]))
+   rnn:backward(input, criterion:backward(rnn.output, target))
    rnn:updateParameters(0.01)
 end
-if cpu ~= true then cutorch.synchronize() end
+cutorch.synchronize()
 print("Forward + Backward:")
-print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. nSamples / a:time().real .. " samples/s) ---")
+local speed = nSamples / a:time().real
+print("--- " .. nSamples .. " samples in " .. a:time().real .. " seconds (" .. speed .. " samples/s, " .. 1000000/speed .. " microsec/samples) ---")

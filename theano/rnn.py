@@ -219,14 +219,12 @@ class FastLSTM(object):
 
 optparser = optparse.OptionParser()
 optparser.add_option("-n", "--network_type", default='rnn', help="Network type (rnn, lstm, fastlstm)")
-optparser.add_option("-i", "--input_size", default=100, type='int', help="Input layer size")
-optparser.add_option("-l", "--hidden_size", default=100, type='int', help="Hidden layer size")
+optparser.add_option("-l", "--hidden_size", default=128, type='int', help="Hidden layer size")
 optparser.add_option("-s", "--seq_length", default=30, type='int', help="Sequence length")
-optparser.add_option("-b", "--batch_size", default=20, type='int', help="Batch size")
+optparser.add_option("-b", "--batch_size", default=32, type='int', help="Batch size")
 opts = optparser.parse_args()[0]
 
 network_type = opts.network_type
-input_size = opts.input_size
 hidden_size = opts.hidden_size
 seq_length = opts.seq_length
 batch_size = opts.batch_size
@@ -234,9 +232,9 @@ batch_size = opts.batch_size
 
 # Data
 
-n_samples = 100000
-x_values = theano.shared(np.random.rand(n_samples, seq_length, input_size).astype(np.float32))
-y_values = theano.shared(np.random.rand(n_samples, hidden_size).astype(np.float32))
+n_batch = 1000
+xinput = theano.shared(np.random.rand(seq_length, batch_size, hidden_size).astype(np.float32))
+ytarget = theano.shared(np.random.rand(batch_size, hidden_size).astype(np.float32))
 
 
 # Network
@@ -248,39 +246,41 @@ x = T.ftensor3()
 y = T.fmatrix()
 
 if network_type == 'rnn':
-    rnn = RNN(input_size, hidden_size)
+    rnn = RNN(hidden_size, hidden_size)
 elif network_type == 'lstm':
-    rnn = LSTM(input_size, hidden_size)
+    rnn = LSTM(hidden_size, hidden_size)
 elif network_type == 'fastlstm':
-    rnn = FastLSTM(input_size, hidden_size)
+    rnn = FastLSTM(hidden_size, hidden_size)
 else:
     raise Exception('Unknown network!')
-output = rnn.link(x)
+output = rnn.link(x.dimshuffle(1, 0, 2))
 
 cost = ((output - y) ** 2).mean()
 updates = [(p, p - theano.shared(np.float32(0.01)) * g) for p, g in zip(rnn.params, T.grad(cost, rnn.params))]
 
-print 'compiling...'
-f_test = theano.function(inputs=[index], outputs=output, givens={x: x_values[index:index + batch_size]})
-f_train = theano.function(inputs=[index], outputs=cost, updates=updates, givens={x: x_values[index:index + batch_size], y: y_values[index:index + batch_size]})
-f_train(0)
+print 'Compiling...'
+f_test = theano.function(inputs=[], outputs=output, givens={x: xinput})
+f_train = theano.function(inputs=[], outputs=cost, updates=updates, givens={x: xinput, y: ytarget})
+f_train()
+theano.sandbox.cuda.synchronize()
 print "Setup : compile + forward/backward x 1"
 print "--- %s seconds" % (time.time() - start)
 
+n_samples = n_batch * batch_size
 start = time.time()
-for k, i in enumerate(xrange(0, n_samples, batch_size)):
-    # if k % 100 == 0:
-    #     print k
-    f_test(i)
+for i in xrange(0, n_batch):
+    f_test()
+theano.sandbox.cuda.synchronize()
 end = time.time()
 print "Forward:"
 print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)
 
 start = time.time()
-for k, i in enumerate(xrange(0, n_samples, batch_size)):
+for i in xrange(0, n_batch):
     # if k % 100 == 0:
     #     print k
-    f_train(i)
+    f_train()
+theano.sandbox.cuda.synchronize()
 end = time.time()
 print "Forward + Backward:"
 print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)
