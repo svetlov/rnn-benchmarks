@@ -3,8 +3,7 @@ import time
 import optparse
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.ops import rnn
-
+from random import randint
 
 def get_feed_dict(x_data, y_data=None):
     feed_dict = {}
@@ -12,8 +11,10 @@ def get_feed_dict(x_data, y_data=None):
     if y_data is not None:
         feed_dict[y] = y_data
 
-    for i in xrange(x_data.shape[0]):
-        feed_dict[x[i]] = x_data[i, :, :]
+    # for i in range(x_data.shape[0]):
+    #     x[i] = x_data[i, :, :]
+
+    feed_dict[x] = x_data
 
     return feed_dict
 
@@ -33,16 +34,19 @@ hidden_size = opts.hidden_size
 seq_length = opts.seq_length
 batch_size = opts.batch_size
 
-n_batch = 1000
+n_batch = 10000
 n_samples = batch_size * n_batch 
 
+n_pre_alllocate = 1000
+
 # Data
-xinput = np.random.rand(seq_length, batch_size, hidden_size).astype(np.float32)
+pre_allocate_xinput = np.random.rand(n_pre_alllocate, seq_length, batch_size, hidden_size).astype(np.float32)
 ytarget = np.random.rand(batch_size, hidden_size).astype(np.float32)
 
 with tf.device('/gpu:0'):
 
-   x = [tf.placeholder(tf.float32, [batch_size, hidden_size], name="x") for i in range(seq_length)]
+   #x = [tf.placeholder(tf.float32, [batch_size, hidden_size], name="x") for i in range(seq_length)]
+   x = tf.placeholder(tf.float32, [seq_length, batch_size, hidden_size])
    y = tf.placeholder(tf.float32, [batch_size, hidden_size], name="y")
 
    if network_type == 'rnn':
@@ -50,13 +54,13 @@ with tf.device('/gpu:0'):
    elif network_type == 'lstm':
        cell = tf.nn.rnn_cell.LSTMCell(hidden_size, hidden_size)
    elif network_type == 'basic_lstm':
-       cell = tf.nn.rnn_cell.BasicLSTMCell(hidden_size)
+       cell = tf.contrib.rnn.BasicLSTMCell(hidden_size)
    else:
        raise Exception('Unknown network! '+network_type)
 
-   print "Compiling..."
+   print("Compiling...")
    start = time.time()
-   output, _cell_state = rnn.rnn(cell, x, dtype=tf.float32)
+   output, _cell_state = tf.nn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    cost = tf.reduce_sum((output[-1] - y) ** 2)
 
    optim = tf.train.GradientDescentOptimizer(0.01)
@@ -64,20 +68,22 @@ with tf.device('/gpu:0'):
 
    session = tf.Session()
    session.run(tf.initialize_all_variables())
-   session.run(train_op, feed_dict=get_feed_dict(xinput, ytarget))
-   print "Setup : compile + forward/backward x 1"
-   print "--- %s seconds" % (time.time() - start)
+   session.run(train_op, feed_dict=get_feed_dict(pre_allocate_xinput[0], ytarget))
+   print("Setup : compile + forward/backward x 1")
+   print("--- %s seconds" % (time.time() - start))
 
    start = time.time()
-   for i in xrange(0, n_batch):
-       session.run(output[-1], feed_dict=get_feed_dict(xinput))
+   for i in range(0, n_batch):
+       xinput = pre_allocate_xinput[randint(0, n_pre_alllocate - 1)]
+       session.run(output, feed_dict=get_feed_dict(xinput))
    end = time.time()
-   print "Forward:"
-   print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)
+   print("Forward:")
+   print("--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples))
 
    start = time.time()
-   for i in xrange(0, n_batch):
+   for i in range(0, n_batch):
+       xinput = pre_allocate_xinput[randint(0, n_pre_alllocate - 1)]
        session.run(train_op, feed_dict=get_feed_dict(xinput, ytarget))
    end = time.time()
-   print "Forward + Backward:"
-   print "--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples)
+   print("Forward + Backward:")
+   print("--- %i samples in %s seconds (%f samples/s, %.7f s/sample) ---" % (n_samples, end - start, n_samples / (end - start), (end - start) / n_samples))
