@@ -3,6 +3,7 @@ import time
 import optparse
 import numpy as np
 import tensorflow as tf
+
 from random import randint
 
 def get_feed_dict(x_data, y_data=None):
@@ -28,16 +29,16 @@ optparser.add_option("-b", "--batch_size", default=20, type='int', help="Batch s
 opts = optparser.parse_args()[0]
 
 network_type = opts.network_type
-print(network_type)
+print("Lstm type is: {}".format(network_type))
 hidden_size = opts.hidden_size
 hidden_size = opts.hidden_size
 seq_length = opts.seq_length
 batch_size = opts.batch_size
 
-n_batch = 10000
+n_batch = 1000
 n_samples = batch_size * n_batch 
 
-n_pre_alllocate = 1000
+n_pre_alllocate = 100
 
 # Data
 pre_allocate_xinput = np.random.rand(n_pre_alllocate, seq_length, batch_size, hidden_size).astype(np.float32)
@@ -51,16 +52,34 @@ with tf.device('/gpu:0'):
 
    if network_type == 'rnn':
        cell = tf.nn.rnn_cell.BasicRNNCell(hidden_size)
+       output, _cell_state = rnn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    elif network_type == 'lstm':
        cell = tf.nn.rnn_cell.LSTMCell(hidden_size, hidden_size)
+       output, _cell_state = rnn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    elif network_type == 'basic_lstm':
        cell = tf.contrib.rnn.BasicLSTMCell(hidden_size)
+       output, _cell_state = rnn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
+   elif network_type == 'cudnn_lstm':
+       cell = tf.contrib.cudnn_rnn.CudnnLSTM(
+           num_layers=1,
+           num_units=hidden_size,
+           input_size=hidden_size)
+       params_size_t = cell.params_size()
+       params = tf.Variable(tf.ones([params_size_t]), validate_shape=False)
+       output, _hidden_state, _cell_state = cell(
+           input_data=x,
+           input_h=tf.zeros([1,batch_size,hidden_size]),
+           input_c=tf.zeros([1,batch_size,hidden_size]),
+           params=params,
+           is_training=True)
+   elif network_type == 'fused_lstm':
+       cell = tf.contrib.rnn.LSTMBlockFusedCell(hidden_size)
+       output, _cell_state = cell(x, dtype=tf.float32)
    else:
        raise Exception('Unknown network! '+network_type)
 
    print("Compiling...")
    start = time.time()
-   output, _cell_state = tf.nn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    cost = tf.reduce_sum((output[-1] - y) ** 2)
 
    optim = tf.train.GradientDescentOptimizer(0.01)
