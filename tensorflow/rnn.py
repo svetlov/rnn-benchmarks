@@ -36,7 +36,7 @@ seq_length = opts.seq_length
 batch_size = opts.batch_size
 
 n_batch = 1000
-n_samples = batch_size * n_batch 
+n_samples = batch_size * n_batch
 
 n_pre_alllocate = 100
 
@@ -52,13 +52,13 @@ with tf.device('/gpu:0'):
 
    if network_type == 'rnn':
        cell = tf.nn.rnn_cell.BasicRNNCell(hidden_size)
-       output, _cell_state = rnn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
+       output, _cell_state = tf.nn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    elif network_type == 'lstm':
        cell = tf.nn.rnn_cell.LSTMCell(hidden_size, hidden_size)
-       output, _cell_state = rnn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
+       output, _cell_state = tf.nn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    elif network_type == 'basic_lstm':
        cell = tf.contrib.rnn.BasicLSTMCell(hidden_size)
-       output, _cell_state = rnn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
+       output, _cell_state = tf.nn.dynamic_rnn(cell, x, time_major=True, dtype=tf.float32)
    elif network_type == 'cudnn_lstm':
        cell = tf.contrib.cudnn_rnn.CudnnLSTM(
            num_layers=1,
